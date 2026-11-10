@@ -213,7 +213,7 @@ def main():
             elif choice == MENU_SCORE:
                 show_score()
             elif choice == MENU_EXIT:
-                print("프로그램을 종료합니다. 안녕히 가세요!")
+                print("프로그램을  종료합니다. 안녕히 가세요!")
                 break
 
     except (KeyboardInterrupt, EOFError):
