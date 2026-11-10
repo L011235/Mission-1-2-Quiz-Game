@@ -76,7 +76,7 @@ class QuizGame:
                 choice = self.read_int("선택: ", MENU_PLAY, MENU_EXIT)
 
                 if choice == MENU_EXIT:
-                    print("프로그램을 종료합니다. 안녕히 가세요!")
+                    print("프로그램을 종료합니다  안녕히 가세요!")
                     break
 
                 # 아직 기능이 없으므로 입력받은 번호만 출력 확인
