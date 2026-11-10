@@ -39,6 +39,60 @@ $
 #### 스크린샷
 ![git 저장소 생성](images/01gitbash_folder.png)
 ![git 저장소 생성](images/01_02_git_init.png)
+
+
+### 뼈대 업로드
+```bash
+
+git config --global core.autocrlf true
+git add .
+git commit -m "Docs: 프로젝트 초기설정 (.gitignore, README 뼈대)"
+git remote add origin https://github.com/L011235/Mission-1-2-Quiz-Game
+git push -u origin main
+```
+#### 실행결과
+```text
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ git add .
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ ^C
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ git config --global core.autocrlf true
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ git add .
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ git commit -m "Docs: 프로젝트 초기설정 (.gitignore, README 뼈대)"
+[main (root-commit) 9cc32cb] Docs: 프로젝트 초기설정 (.gitignore, README 뼈대)
+ 4 files changed, 147 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 README.md
+ create mode 100644 images/01_02_git_init.png
+ create mode 100644 images/01gitbash_folder.png
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ git remote add origin https://github.com/L011235/Mission-1-2-Quiz-Game
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+$ git push -u origin main
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 20 threads
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (7/7), 160.23 KiB | 22.89 MiB/s, done.
+Total 7 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/L011235/Mission-1-2-Quiz-Game
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+
+user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
+```
+
 ```bash
 git clone <저장소 URL>
 cd <저장소 폴더>
