@@ -117,6 +117,57 @@ def create_default_quizzes():
             ["git pull", "git clone", "git init", "git push"],
             4,
         ),
+        Quiz(
+            "파이썬에서 변수명으로 사용할 수 없는 것은?",
+            ["_value", "user_name", "3_index", "item_list"],
+            3,
+        ),
+        Quiz(
+            "문자열 'Python'에서 'P'만 추출하기 위한 올바른 인덱싱 표현은?",
+            ["'Python'[1]", "'Python'[0]", "'Python'[-1]", "'Python'[first]"],
+            2,
+        ),
+        Quiz(
+            "리스트의 가장 마지막에 새로운 요소를 하나 추가할 때 사용하는 메서드는?",
+            ["append()", "insert()", "extend()", "add()"],
+            1,
+        ),
+        Quiz(
+            "파이썬에서 문자열의 길이나 리스트의 요소 개수를 구할 때 쓰는 내장 함수는?",
+            ["size()", "count()", "length()", "len()"],
+            4,
+        ),
+        Quiz(
+            "파이썬에서 10 % 3 의 결과는?",
+            ["3.33", "1", "3", "0"],
+            2,
+        ),
+        Quiz(
+            "두 조건이 모두 참(True)일 때만 전체를 참으로 판단하는 논리 연산자는?",
+            ["or", "not", "and", "xor"],
+            3,
+        ),
+        Quiz(
+            "정수형(int) 변수를 실수형(float)으로 변환하고자 할 때 사용하는 함수는?",
+            ["float()", "int()", "str()", "type()"],
+            1,
+        ),
+        Quiz(
+            "한 번 생성하면 내부 요소를 수정하거나 삭제할 수 없는 파이썬의 불변(immutable) 시퀀스 자료형은?",
+            ["list", "dict", "tuple", "set"],
+            3,
+        ),
+        Quiz(
+            "리스트나 range의 요소를 하나씩 꺼내어 순차적으로 반복할 때 주로 사용하는 반복문은?",
+            ["while", "for", "if", "switch"],
+            2,
+        ),
+        Quiz(
+            "파이썬에서 새로운 함수를 정의할 때 가장 먼저 선언하는 키워드는?",
+            ["class", "return", "import", "def"],
+            4,
+        ),
+    
     ]
 
 
