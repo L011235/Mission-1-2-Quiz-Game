@@ -1,39 +1,22 @@
 """나만의 퀴즈 게임 
+
+
 [이번 단계에서 한 일]
-  - 퀴즈와 최고 점수를 프로젝트 루트의 state.json 에 UTF-8 JSON 으로 저장/불러오기
-  - 파일이 없으면(첫 실행) 기본 퀴즈로 시작, 손상되면 안내 후 복구(.corrupt 백업)
-  - 임시 파일에 먼저 쓴 뒤 교체하는 안전한 저장, 종료 시 finally 로 한 번 더 저장
-  - Quiz.to_dict / Quiz.from_dict, 불러온 데이터 검사(apply_state)
+  - import random 추가
+  - play_quiz 에서 random.shuffle 로 문제 순서를 섞음
+  - ⚠️ 알려진 문제: 섞는 대상이 원본 self.quizzes 라서 '퀴즈 목록' 번호와 파일에 저장되는 순서가 게임할 때마다 바뀜 → 다음 단계에서 해결
 
-[눈여겨볼 개념]
-  - 파일 열기/읽기/쓰기, with 문, JSON, try/except/else/finally
 
-[Git 커밋 메시지 예시]
-  - Feat: state.json 저장/불러오기 구현
-  - Docs: README 작성
-
-[진행 현황]
-  ✅ 메뉴 기능 (4.2 / 4.3)
-  ✅ Quiz 클래스 · 기본 퀴즈 (4.4 / 4.5)
-  ✅ 퀴즈 목록 (4.8)
-  ✅ 퀴즈 풀기 (4.6)
-  ✅ 점수 확인 (4.9)
-  ✅ 퀴즈 추가 (4.7)
-  ✅ QuizGame 클래스 (4.10)
-  ✅ state.json 저장/불러오기 (4.11)
-  ⬜ [보너스] 5.1 랜덤 출제
-  ⬜ [보너스] 5.2 문제 수 선택
-  ⬜ [보너스] 5.3 힌트 + 점수 차감
-  ⬜ [보너스] 5.4 퀴즈 삭제
-  ⬜ [보너스] 5.5 점수 기록 히스토리
-
-실행 방법: python main05.py
-참고: state.json 은 이 파일과 같은 폴더에 만들어집니다. 다른 단계 파일로 바꿔 실행할 때는
-      state.json 을 지우고 시작하세요. (앞 단계 파일은 새 항목(hint, history)을 몰라서 덮어쓸 수 있어요.)
 """
 
+# ---------------------------------------------------------------------------
+# import: 다른 사람이 만들어 둔 도구(모듈)를 가져와서 쓰는 문장이다.
+# 아래는 모두 파이썬에 기본으로 들어 있는 "표준 라이브러리"이다.
+# (따로 설치할 필요가 없다 -> 미션의 "외부 라이브러리 금지" 조건을 지킨다.)
+# ---------------------------------------------------------------------------
 import json  # 파이썬 데이터(딕셔너리/리스트)와 JSON 문자열을 서로 변환해 주는 모듈
 import os  # 운영체제 기능(파일 이름 바꾸기/교체 등)을 쓰기 위한 모듈
+import random  # [보너스 5.1/5.2] 무작위로 뽑거나 섞을 때 쓰는 모듈
 import sys  # 파이썬 실행 환경 정보(표준 출력 등)를 다루는 모듈
 from pathlib import Path  # 파일/폴더 경로를 "객체"로 편하게 다루게 해 주는 클래스
 
@@ -334,10 +317,10 @@ class QuizGame:
         print(WIDE_LINE)
 
     # =======================================================================
-    # 3. 기능: 퀴즈 풀기
+    # 3. 기능: 퀴즈 풀기  [보너스 5.1 랜덤 출제]
     # =======================================================================
     def play_quiz(self):
-        """저장된 퀴즈를 차례로 출제하고, 정답 여부와 최종 결과를 보여 준다."""
+        """퀴즈를 랜덤 순서로 출제하고, 정답 여부와 최종 결과를 보여 준다."""
 
         # 퀴즈가 하나도 없는 경우: 빈 리스트는 False 취급이므로 "not self.quizzes" 가 True.
         # 안내 메시지를 출력하고 return 으로 이 함수를 바로 끝낸다. (조기 반환)
@@ -345,14 +328,25 @@ class QuizGame:
             print("등록된 퀴즈가 없습니다. 먼저 '퀴즈 추가'로 퀴즈를 등록해 주세요.")
             return
 
-        total = len(self.quizzes)  # 전체 문제 수
-        correct = 0  # 맞힌 문제 수를 세는 변수 (처음엔 0)
-        print(f"퀴즈를 시작합니다! (총 {total}문제)")
+        # --- [보너스 5.1] 랜덤 출제 (첫 번째 방법: random.shuffle) -----------------
+        # random.shuffle(목록): 목록의 순서를 "그 자리에서" 무작위로 섞는다. (반환값은 없다)
+        # 주의! 아래의 selected = self.quizzes 는 리스트를 "복사"하는 것이 아니라,
+        # 같은 리스트에 이름(별칭)을 하나 더 붙이는 것이다. 그래서 selected 를 섞으면
+        # self.quizzes 도 함께 섞인다. -> '퀴즈 목록' 번호와 저장 순서가 게임할 때마다 바뀌는 문제!
+        # (이 문제는 다음 단계에서 해결한다.)
+        selected = self.quizzes
+        random.shuffle(selected)
+        count = len(selected)  # 이번 판에 풀 문제 수
 
-        # for 문: 퀴즈 리스트에서 하나씩 꺼내 "끝까지" 반복한다. (횟수가 정해져 있으므로 for)
-        for number, quiz in enumerate(self.quizzes, start=1):
+        correct = 0  # 맞힌 문제 수를 세는 변수 (처음엔 0)
+
+        print(f"퀴즈를 시작합니다! (총 {count}문제)")
+
+        # for 문: 뽑힌 퀴즈를 하나씩 꺼내 "끝까지" 반복한다. (횟수가 정해져 있으므로 for)
+        for number, quiz in enumerate(selected, start=1):
             print(THIN_LINE)
             quiz.display(number)  # Quiz 객체의 display 메서드로 문제를 출력
+
             # 선택지는 4개이므로 1~4 사이의 번호만 받는다.
             user_answer = self.read_int("정답 입력: ", 1, CHOICE_COUNT)
 
@@ -364,15 +358,13 @@ class QuizGame:
                 print(f"❌ 오답입니다. 정답은 {quiz.answer}번 ({quiz.correct_choice()}) 입니다.")
 
         # --- 결과 계산 ---
-        # 점수 = 맞힌 개수 / 전체 개수 * 100 (100점 만점)
-        # round(): 반올림해서 정수로 만든다. 예) 5문제 중 4문제 -> 80점
-        score = round(correct * 100 / total)
+        score = round(correct * 100 / count)  # 100점 만점 (round: 반올림)
 
         print(WIDE_LINE)
-        print(f"결과: {total}문제 중 {correct}문제 정답! ({score}점)")
+        print(f"결과: {count}문제 중 {correct}문제 정답! ({score}점)")
 
         # 최고 점수와 비교해서 갱신한다. 갱신했다면 True 가 돌아온다.
-        if self.update_best_score(score, correct, total):
+        if self.update_best_score(score, correct, count):
             print("🎉 새로운 최고 점수입니다!")
         print(WIDE_LINE)
 
