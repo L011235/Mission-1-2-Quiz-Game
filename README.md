@@ -169,8 +169,99 @@ python main.py        # macOS/Linux에서 python3 main.py
   ]
 }
 ```
+## 플로차트
+### 전체흐름도
+```mermaid
+flowchart TD
+    A([프로그램 시작]) --> B["main()<br/>→ QuizGame() 생성: __init__()<br/>→ run()"]
+    B --> C["show_banner()<br/>배너 출력"]
+    C --> D["load_state()<br/>state.json 불러오기"]
+    D --> E["show_menu()<br/>메뉴 출력"]
+    E --> F[/"read_int()<br/>메뉴 번호 입력 (1~5)<br/>잘못된 입력이면 다시 입력"/]
+    F --> G{"선택한 메뉴<br/>actions[choice]()"}
 
-| 필드 | 타입 | 설명 |
+    G -->|1| M1["play_quiz()<br/>퀴즈 풀기"]
+    G -->|2| M2["add_quiz()<br/>퀴즈 추가"]
+    G -->|3| M3["show_quiz_list()<br/>퀴즈 목록"]
+    G -->|4| M4["show_score()<br/>점수 확인"]
+    G -->|5| X["종료 메시지 출력<br/>(while 반복문 break)"]
+
+    M1 & M2 & M3 & M4 --> E
+
+    F -.->|"Ctrl+C / 입력 종료<br/>KeyboardInterrupt, EOFError"| K["중단 안내 메시지 출력"]
+
+    X --> S["save_state()<br/>(finally: 항상 실행)"]
+    K --> S
+    S --> Z([프로그램 종료])
+```
+### 시작시 데이터 로드
+```mermaid
+flowchart TD
+    A(["load_state() 시작"]) --> B{"state_path.exists()<br/>state.json 이 있는가?"}
+
+    B -->|없음: 첫 실행| C["reset_to_default()<br/>→ create_default_quizzes()<br/>기본 퀴즈로 초기화"]
+    C --> C2["'첫 실행' 안내 출력"]
+    C2 --> C3["save_state()<br/>state.json 새로 저장"]
+    C3 --> END([종료])
+
+    B -->|있음| D["open() + json.load()<br/>파일 읽기 + JSON 변환"]
+    D --> D2["apply_state()<br/>→ Quiz.from_dict(), _optional_count()<br/>내용 검사 후 반영"]
+    D2 --> E{결과}
+
+    E -->|"성공 (else)"| F["불러오기 완료 메시지<br/>(퀴즈 수, 최고점수)"]
+    E -->|"내용 손상<br/>ValueError / KeyError / TypeError"| G["손상 안내 출력"]
+    G --> G2["backup_corrupted_file()<br/>os.replace()로 .corrupt 보관"]
+    G2 --> G3["reset_to_default()<br/>기본 퀴즈로 초기화"]
+    G3 --> G4["save_state()<br/>깨끗한 state.json 저장"]
+    E -->|"읽기 실패<br/>OSError"| H["오류 안내 출력"]
+    H --> H2["reset_to_default()<br/>기본 퀴즈로 초기화"]
+
+    F --> END
+    G4 --> END
+    H2 --> END
+```
+### 퀴즈 풀기
+```mermaid
+flowchart TD
+    A(["play_quiz() 시작"]) --> B{"self.quizzes 가<br/>비어 있지 않은가?"}
+    B -->|없음| B1["'등록된 퀴즈가 없습니다' 출력"] --> END([메뉴로 돌아감])
+
+    B -->|있음| C["total = len(self.quizzes)<br/>correct = 0"]
+    C --> D["'퀴즈를 시작합니다' 출력"]
+    D --> E{"풀 문제가<br/>남았는가?<br/>for + enumerate()<br/>(저장된 순서대로)"}
+
+    E -->|예| F["quiz.display(number)<br/>문제와 선택지 출력"]
+    F --> G[/"read_int()<br/>정답 입력 (1~4)<br/>잘못된 입력이면 다시 입력"/]
+    G --> H{"quiz.is_correct()<br/>정답인가?"}
+    H -->|정답| I["correct + 1<br/>'정답입니다' 출력"]
+    H -->|오답| J["quiz.correct_choice()<br/>오답 안내 + 정답 알려주기"]
+    I --> E
+    J --> E
+
+    E -->|아니오: 모두 풀었음| K["round(correct × 100 ÷ total)<br/>점수 계산"]
+    K --> L["결과 출력<br/>(N문제 중 M문제 정답)"]
+    L --> M{"update_best_score()<br/>최고 점수보다 높은가?<br/>(또는 첫 기록인가?)"}
+    M -->|"True"| M1["최고 점수 갱신 + 🎉 안내"] --> N
+    M -->|"False"| N["save_state()<br/>state.json 저장"]
+    N --> END
+```
+### 퀴즈 추가
+
+```mermaid
+flowchart TD
+    A(["add_quiz() 시작"]) --> B["'새로운 퀴즈를 추가합니다' 출력"]
+    B --> C[/"read_text()<br/>문제 입력<br/>(빈 입력이면 다시 입력)"/]
+    C --> D[/"read_text() × 4<br/>선택지 1~4 입력<br/>(각각 빈 입력이면 다시 입력)"/]
+    D --> E[/"read_int()<br/>정답 번호 입력 (1~4)"/]
+    E --> F["Quiz() 객체 생성 → __init__() 입력값 검사<br/>self.quizzes.append()"]
+    F --> G{"save_state()<br/>저장 성공?"}
+    G -->|"True"| H["✅ 퀴즈가 추가되었습니다"]
+    G -->|"False"| I["⚠️ 추가는 됐지만<br/>저장 실패 안내"]
+    H --> END([메뉴로 돌아감])
+    I --> END
+```
+| 필드 | 타입 |
+ 설명 |
 | --- | --- | --- |
 | `quizzes` | list | 퀴즈 목록 |
 | `quizzes[].question` | str | 문제 |
