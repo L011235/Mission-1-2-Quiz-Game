@@ -226,37 +226,42 @@ flowchart TD
     A(["play_quiz() 시작"]) --> B{"self.quizzes 가<br/>비어 있지 않은가?"}
     B -->|없음| B1["'등록된 퀴즈가 없습니다' 출력"] --> END([메뉴로 돌아감])
 
-    B -->|있음| C["total = len(self.quizzes)<br/>correct = 0"]
-    C --> D["'퀴즈를 시작합니다' 출력"]
-    D --> E{"풀 문제가<br/>남았는가?<br/>for + enumerate()<br/>(저장된 순서대로)"}
+    B -->|있음| C["available = len(self.quizzes)<br/>등록된 퀴즈 수 확인"]
+    C --> D{"available == 1 ?<br/>(퀴즈가 1개뿐인가?)"}
+    D -->|예| D1["count = 1<br/>(문제 수를 묻지 않음)"]
+    D -->|아니오| D2[/"read_int()<br/>풀 문제 수 입력 (1~available)<br/>잘못된 입력이면 다시 입력"/]
+    D1 --> E
+    D2 --> E["random.sample(self.quizzes, count)<br/>중복 없이 랜덤 순서로 count개 뽑기<br/>(원본 순서는 그대로)"]
 
-    E -->|예| F["quiz.display(number)<br/>문제와 선택지 출력"]
-    F --> G[/"read_int()<br/>정답 입력 (1~4)<br/>잘못된 입력이면 다시 입력"/]
-    G --> H{"quiz.is_correct()<br/>정답인가?"}
-    H -->|정답| I["correct + 1<br/>'정답입니다' 출력"]
-    H -->|오답| J["quiz.correct_choice()<br/>오답 안내 + 정답 알려주기"]
-    I --> E
-    J --> E
+    E --> F["correct = 0<br/>'퀴즈를 시작합니다 (총 count문제)' 출력"]
+    F --> G{"풀 문제가<br/>남았는가?<br/>for + enumerate()<br/>(뽑힌 selected 순서대로)"}
 
-    E -->|아니오: 모두 풀었음| K["round(correct × 100 ÷ total)<br/>점수 계산"]
-    K --> L["결과 출력<br/>(N문제 중 M문제 정답)"]
-    L --> M{"update_best_score()<br/>최고 점수보다 높은가?<br/>(또는 첫 기록인가?)"}
-    M -->|"True"| M1["최고 점수 갱신 + 🎉 안내"] --> N
-    M -->|"False"| N["save_state()<br/>state.json 저장"]
-    N --> END
+    G -->|예| H["quiz.display(number)<br/>문제와 선택지 출력"]
+    H --> I[/"read_int()<br/>정답 입력 (1~4)<br/>잘못된 입력이면 다시 입력"/]
+    I --> J{"quiz.is_correct()<br/>정답인가?"}
+    J -->|정답| K["correct + 1<br/>'정답입니다' 출력"]
+    J -->|오답| L["quiz.correct_choice()<br/>오답 안내 + 정답 알려주기"]
+    K --> G
+    L --> G
+
+    G -->|아니오: 모두 풀었음| M["round(correct × 100 ÷ count)<br/>점수 계산"]
+    M --> N["결과 출력<br/>(count문제 중 correct문제 정답)"]
+    N --> O{"update_best_score()<br/>최고 점수보다 높은가?<br/>(또는 첫 기록인가?)"}
+    O -->|"True"| O1["최고 점수 갱신 + 🎉 안내"] --> P
+    O -->|"False"| P["save_state()<br/>state.json 저장"]
+    P --> END
 ```
 ### 퀴즈 추가
-
 ```mermaid
 flowchart TD
-    A([퀴즈 추가 시작]) --> B["'새로운 퀴즈를 추가합니다' 출력"]
-    B --> C[/"문제 입력<br/>(빈 입력이면 다시 입력)"/]
-    C --> D[/"선택지 1~4 입력<br/>(각각 빈 입력이면 다시 입력)"/]
-    D --> E[/"정답 번호 입력 (1~4)"/]
-    E --> F["Quiz 객체 생성 후<br/>퀴즈 목록에 추가"]
+    A(["add_quiz() 시작"]) --> B["'새로운 퀴즈를 추가합니다' 출력"]
+    B --> C[/"read_text()<br/>문제 입력<br/>(빈 입력이면 다시 입력)"/]
+    C --> D[/"read_text() × 4<br/>선택지 1~4 입력<br/>(각각 빈 입력이면 다시 입력)"/]
+    D --> E[/"read_int()<br/>정답 번호 입력 (1~4)"/]
+    E --> F["Quiz() 객체 생성 → __init__() 입력값 검사<br/>self.quizzes.append()"]
     F --> G{"save_state()<br/>저장 성공?"}
-    G -->|성공| H[" 퀴즈가 추가되었습니다"]
-    G -->|실패| I[" 추가는 됐지만<br/>저장 실패 안내"]
+    G -->|"True"| H["✅ 퀴즈가 추가되었습니다"]
+    G -->|"False"| I["⚠️ 추가는 됐지만<br/>저장 실패 안내"]
     H --> END([메뉴로 돌아감])
     I --> END
 ```
