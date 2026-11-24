@@ -199,7 +199,42 @@ flowchart TD
     H --> END([메뉴로 돌아감])
     I --> END
 ```
+## 📸 제출 스크린샷
 
+### 1. 개발 환경
+![Git 설정](images/dev_env.png)
+![Python 버전](images/python_version.png)
+
+### 2. Git 초기 설정
+![git init](images/01_02_git_init.png)
+![첫 commit과 push](images/01_03_git_push_initial_files.png)
+![GitHub 저장소 생성](images/01gitbash_folder.png)
+
+### 3. 프로그램 실행 결과
+**최고 점수 확인 (재실행 후에도 저장된 데이터 유지)**
+![점수 확인](images/best_score.png)
+
+**퀴즈 풀기 (문제 수 선택, 랜덤 출제, 오답 안내)**
+![퀴즈 풀기](images/solving_the_quiz.png)
+
+**퀴즈 추가**
+![퀴즈 추가](images/adding_the_quiz.png)
+
+**퀴즈 목록**
+![퀴즈 목록](images/quiz_list.png)
+
+**입력 예외 처리 (범위 밖, 문자, 빈 입력, Ctrl+C)**
+![입력 예외 처리](images/input_filter.png)
+
+### 4. Git 이력
+**커밋 로그 (`git log --oneline --graph`)**
+![커밋 로그](images/commit_logs.png)
+
+**clone**
+![clone](images/git_clone.png)
+
+**pull**
+![pull](images/main_pull.png)
 
 ---
 
