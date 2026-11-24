@@ -1,146 +1,79 @@
-# 나만의 퀴즈 게임
+# 🎯 나만의 터미널 퀴즈 게임
 
-## 프로젝트 개요
-터미널(콘솔)에서 동작하는 Python 퀴즈 게임입니다.
-메뉴에서 번호를 골라 퀴즈를 풀고, 새 퀴즈를 추가·삭제하고, 목록과 최고 점수, 플레이 기록을 확인할 수 있습니다.
-퀴즈와 점수, 기록은 `state.json` 파일에 저장되므로 프로그램을 종료했다가 다시 실행해도 유지됩니다.
+> 입학연수 미션 「컴퓨터에게 명령 내리는 말(파이썬) 처음 배우기」 결과물
+> Python 표준 라이브러리만으로 만든 콘솔 퀴즈 게임입니다. (Python 3.10+)
 
-- Python 기본 문법 + 클래스(`Quiz`, `QuizGame`)로 역할을 분리했습니다.
-- 외부 라이브러리 없이 표준 라이브러리(`json`, `os`, `random`, `sys`, `datetime`, `pathlib`)만 사용합니다.
-- 보너스 과제 5개(랜덤 출제, 문제 수 선택, 힌트, 퀴즈 삭제, 점수 기록)를 모두 구현했습니다.
+---
 
-## 퀴즈 주제와 선정 이유
-**주제: 파이썬 & 개발 입문 기초**
+## 📌 프로젝트 개요
 
-이 미션에서 배우는 내용(자료형, 반복문, 클래스, Git)을 퀴즈로 만들면 문제를 쓰면서 개념을 다시 정리할 수 있어서 선택했습니다.
-(※ 본인이 정한 주제와 이유로 바꿔서 작성하세요.)
+터미널에서 실행하는 퀴즈 게임입니다. 메뉴에서 번호를 골라 퀴즈를 풀고, 새 퀴즈를 추가하고, 목록과 최고 점수를 확인할 수 있습니다.
+퀴즈와 최고 점수는 `state.json`에 저장되므로 프로그램을 종료했다가 다시 실행해도 유지됩니다.
+보너스는 랜덤 출제(5.1)와 문제 수 선택(5.2)을 구현했고, 힌트·삭제·히스토리는 미구현입니다.
 
-## 실행 방법
-Python 3.10 이상이 필요합니다.
+- **언어/환경:** Python 3.10 이상, 외부 라이브러리 없음 (`json`, `os`, `random`, `sys`, `pathlib`만 사용)
+- **구조:** `Quiz`(문제 1개) / `QuizGame`(메뉴·출제·저장 등 전체 흐름) 두 클래스
+- **핵심 학습 요소:** 입출력, 조건문/반복문, 클래스, JSON 파일 입출력, `try/except` 예외 처리, Git/GitHub
 
-## git init
-```text
-user@DESKTOP-KTF7H73 UCRT64 ~
-$ cd practice
+## 💡 퀴즈 주제 선정 이유
 
-user@DESKTOP-KTF7H73 UCRT64 ~/practice
-$ cd mission-1-2-quiz-game
+- **주제:** 파이썬 & 개발 입문 기초
+- **선정 이유:** > 이번 미션은 파이썬을 배우기 위한 과정이므로 파이썬에 관한 퀴즈를 작성하여 개념을 정리하고자 함.
+  
 
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game
-$ git init
-Initialized empty Git repository in C:/Users/user/Practice/Mission-1-2-Quiz-Game/.git/
+##  git hub URL: https://github.com/L011235/Mission-1-2-Quiz-Game
 
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (master)
-$ git branch -M main
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$
-```
-#### 스크린샷
-![git 저장소 생성](images/01gitbash_folder.png)
-![git 저장소 생성](images/01_02_git_init.png)
-
-
-### 뼈대 업로드
-```bash
-
-git config --global core.autocrlf true
-git add .
-git commit -m "Docs: 프로젝트 초기설정 (.gitignore, README 뼈대)"
-git remote add origin https://github.com/L011235/Mission-1-2-Quiz-Game
-git push -u origin main
-```
-#### 실행결과
-```text
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ git add .
-warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
-warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ ^C
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ git config --global core.autocrlf true
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ git add .
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ git commit -m "Docs: 프로젝트 초기설정 (.gitignore, README 뼈대)"
-[main (root-commit) 9cc32cb] Docs: 프로젝트 초기설정 (.gitignore, README 뼈대)
- 4 files changed, 147 insertions(+)
- create mode 100644 .gitignore
- create mode 100644 README.md
- create mode 100644 images/01_02_git_init.png
- create mode 100644 images/01gitbash_folder.png
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ git remote add origin https://github.com/L011235/Mission-1-2-Quiz-Game
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-$ git push -u origin main
-Enumerating objects: 7, done.
-Counting objects: 100% (7/7), done.
-Delta compression using up to 20 threads
-Compressing objects: 100% (7/7), done.
-Writing objects: 100% (7/7), 160.23 KiB | 22.89 MiB/s, done.
-Total 7 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
-To https://github.com/L011235/Mission-1-2-Quiz-Game
- * [new branch]      main -> main
-branch 'main' set up to track 'origin/main'.
-
-user@DESKTOP-KTF7H73 UCRT64 ~/practice/mission-1-2-quiz-game (main)
-```
+## 🚀 실행 방법
 
 ```bash
-git clone <저장소 URL>
-cd <저장소 폴더>
-python main.py        # macOS/Linux에서 python3 main.py
+# 1. 저장소 복제
+git clone https://github.com/L011235/Mission-1-2-Quiz-Game.git
+cd Mission-1-2-Quiz-Game
+
+# 2. 실행 (Python 3.10 이상)
+python main.py        # macOS/Linux에서는 python3 main.py
 ```
 
-## 기능 목록
-| 메뉴 | 기능 |
-| --- | --- |
-| 1. 퀴즈 풀기 | 풀 문제 수를 고르면 그만큼 **무작위 순서**로 출제. 정답/오답 안내, 결과(100점 만점) 표시, 최고 점수 갱신, 기록 저장 |
-| 2. 퀴즈 추가 | 문제, 선택지 4개, 정답 번호 |
-| 3. 퀴즈 목록 | 등록된 퀴즈의 문제 목록 확인 |
-| 4. 점수 확인 | 최고 점수 확인 (아직 안 풀었다면 안내 메시지) |
-| 5. 종료 | 프로그램 종료 |
+- 처음 실행할 때 `state.json`이 없으면 기본 퀴즈 7개로 시작하고 파일을 자동으로 만듭니다.
+- 입력 중 `Ctrl+C`(또는 입력 종료)를 해도 안내 메시지와 함께 저장 후 안전하게 종료됩니다.
 
-**보너스 과제 구현 현황**
-| 보너스 | 구현 방법 |
-| --- | --- |
-| 5.1 랜덤 출제 | `random.sample` 로 문제 순서를 섞음 (저장된 퀴즈 순서는 그대로) |
-| 5.2 문제 수 선택 | 퀴즈 풀기 시작 전에 풀 문제 수(1~전체)를 입력 |
-| 5.3 힌트 |  미구현  |
-| 5.4 퀴즈 삭제 | 미구현 |
-| 5.5 점수 기록 | 미구현 |
+## ✨ 기능 목록
 
-**점수 계산 규칙**: 문제당 만점 1점. 힌트 없이 정답 = 1점, 오답 = 0점.
-최종 점수 = (얻은 점수 합 ÷ 푼 문제 수) × 100 을 반올림한 값입니다.
+| 메뉴 | 기능 | 설명 |
+|---|---|---|
+| 1 | 퀴즈 풀기 | **풀 문제 수를 선택**하고, 문제를 **랜덤 순서**로 출제. 정답/오답 안내(오답이면 정답 공개), 결과 점수 표시, 최고 점수 갱신 |
+| 2 | 퀴즈 추가 | 문제, 선택지 4개, 정답 번호(1~4)를 입력해 등록하고 즉시 파일에 저장 |
+| 3 | 퀴즈 목록 | 등록된 퀴즈 목록 확인 (없으면 안내 메시지) |
+| 4 | 점수 확인 | 최고 점수 확인 (아직 풀지 않았다면 안내 메시지) |
+| 5 | 종료 | 데이터를 저장하고 종료 |
 
-**안전 처리**
-- 숫자 입력: 앞뒤 공백 제거, 숫자가 아님/범위 밖/빈 입력이면 안내 후 다시 입력
-- `Ctrl+C`, 입력 스트림 종료(EOF): 안내 메시지 출력 후 저장하고 정상 종료
-- `state.json`이 없으면 기본 퀴즈로 시작, 손상되었으면 안내 후 기본 데이터로 복구
-  (손상된 파일은 `state.json.corrupt`로 보관)
+**공통 입력/예외 처리**
+- 입력 앞뒤 공백 제거, 숫자가 아닌 입력 / 빈 입력 / 허용 범위 밖 숫자 → 안내 후 재입력
+- `KeyboardInterrupt`, `EOFError` → 안내 메시지 후 저장하고 종료
+- `state.json` 없음 → 기본 퀴즈로 시작 / 손상됨 → 안내 후 기본 퀴즈로 초기화 (손상 파일은 `state.json.corrupt`로 보관)
+- 저장은 임시 파일(`state.json.tmp`)에 먼저 쓴 뒤 교체해서, 저장 도중 파일이 깨지지 않도록 함
 
-## 파일 구조
-```
+**보너스**
+- [x] 랜덤 출제 (`random.sample`)
+- [x] 문제 수 선택
+
+
+
+## 📁 파일 구조
+
+
+```text
 .
-├── main.py        # Quiz, QuizGame 클래스와 프로그램 진입점
-├── state.json     # 퀴즈 + 최고 점수 + 플레이 기록 저장 파일 (첫 실행 시 자동 생성)
-├── README.md
-├── .gitignore
-└── docs/
-    └── screenshots/   # 실행 화면 캡처 (menu.png, play.png, add_quiz.png, score.png)
+├── main.py        # 프로그램 본체 (Quiz, QuizGame 클래스)
+├── state.json     # 퀴즈 목록과 최고 점수 저장 파일 (실행 시 생성/갱신)
+├── .gitignore     # Git 추적 제외 목록
+├── README.md      # 프로젝트 설명서
+└──images/         # 스크린샷 파일 모음 폴더
 ```
 
-## 데이터 파일 설명 (state.json)
-- 경로: 프로젝트 루트의 `state.json` (UTF-8 인코딩)
-- 역할: 퀴즈 목록, 최고 점수, 플레이 기록을 저장해 프로그램을 다시 실행해도 유지
-- 스키마:
+## 🗂 데이터 파일 설명 (`state.json`)
+
+프로젝트 루트(`main.py`와 같은 폴더)에 UTF-8 인코딩으로 저장됩니다.
 
 ```json
 {
@@ -148,24 +81,28 @@ python main.py        # macOS/Linux에서 python3 main.py
     {
       "question": "파이썬(Python)을 만든 사람은?",
       "choices": ["귀도 반 로섬", "리누스 토르발스", "비야네 스트롭스트룹", "제임스 고슬링"],
-      "answer": 1,
-      "hint": "이름이 '귀'로 시작하는 네덜란드 출신 프로그래머예요."
+      "answer": 1
     }
   ],
-  "best_score": 100,
-  "best_correct": 7,
-  "best_total": 7,
-  "history": [
-    {
-      "played_at": "2026-11-10 14:03:22",
-      "total": 7,
-      "correct": 7,
-      "hints_used": 0,
-      "score": 100
-    }
-  ]
+  "best_score": 80,
+  "best_correct": 4,
+  "best_total": 5
 }
 ```
+
+| 키 | 타입 | 설명 |
+|---|---|---|
+| `quizzes` | list[dict] | 퀴즈 목록 |
+| `quizzes[].question` | str | 문제 |
+| `quizzes[].choices` | list[str] | 선택지 4개 |
+| `quizzes[].answer` | int | 정답 번호 (1~4) |
+| `best_score` | int / null | 최고 점수 (100점 만점). 아직 풀지 않았으면 `null` |
+| `best_correct` | int / null | 최고 점수를 냈을 때 맞힌 문제 수 |
+| `best_total` | int / null | 최고 점수를 냈을 때 전체 문제 수 |
+
+> 파일 형식이 깨지면 다음 실행 때 안내 메시지와 함께 기본 퀴즈로 복구됩니다.
+
+
 ## 플로차트
 ### 전체흐름도
 ```mermaid
@@ -263,18 +200,52 @@ flowchart TD
     I --> END
 ```
 
-| 필드 | 타입 |설명 |
-| --- | --- | --- |
-| `quizzes` | list | 퀴즈 목록 |
-| `quizzes[].question` | str | 문제 |
-| `quizzes[].choices` | list[str] | 선택지 4개 |
-| `quizzes[].answer` | int | 정답 번호 (1~4) |
-| `quizzes[].hint` | str | 힌트. 빈 문자열이면 힌트 없음 (없는 파일이면 빈 문자열로 처리) |
-| `best_score` | int \| null | 최고 점수(100점 만점). 아직 안 풀었으면 `null` |
-| `best_correct` / `best_total` | int \| null | 최고 점수를 냈을 때의 정답 수 / 푼 문제 수 |
-| `history` | list | 플레이 기록 (없는 파일이면 빈 목록으로 처리) |
-| `history[].played_at` | str | 플레이한 날짜/시간 (`YYYY-MM-DD HH:MM:SS`) |
-| `history[].total` | int | 푼 문제 수 |
-| `history[].correct` | int | 맞힌 문제 수 |
-| `history[].hints_used` | int | 힌트를 사용한 문제 수 |
-| `history[].score` | int | 점수 (100점 만점) |
+
+---
+
+
+# ✅ 미션 TODO 리스트
+
+> **현황:** `main.py` 코드는 필수 기능 전부 + 보너스 2개(랜덤 출제, 문제 수 선택)까지 **완성**된 상태입니다.
+> 남은 일은 **Git/GitHub 작업, README, 제출물**입니다. 제출 전까지 하나씩 체크하세요.
+> (최종 제출 때는 이 섹션을 지우거나 "개발 기록"으로 남겨도 됩니다.)
+
+## 🟢 이미 끝난 것 (main.py 기준)
+- [x] 메뉴 출력, 번호 선택, 종료, 잘못된 입력 처리 (미션 4.2)
+- [x] 공통 입력/예외 처리: 공백 제거 / 변환 실패 / 범위 밖 / 빈 입력 / `Ctrl+C`·`EOFError` (4.3)
+- [x] `Quiz` 클래스 + 입력값 검사 (4.4)
+- [x] 기본 퀴즈 7개 (5개 이상 조건 충족) (4.5)
+- [x] 퀴즈 풀기 · 퀴즈 추가 · 퀴즈 목록 · 점수 확인 (4.6~4.9)
+- [x] `QuizGame` 클래스 (4.10)
+- [x] `state.json` 저장/불러오기, 없음·손상 처리 (4.11)
+- [x] 보너스 5.1 랜덤 출제, 5.2 문제 수 선택
+
+## 🔴 해야 할 것
+
+
+### 1. Git 저장소 설정 (`init`, `add`, `commit`, `push`)
+- [x] Python 버전, Git 사용자 설정 확인 (`python --version`, `git config --global user.name` / `user.email`) ← 스크린샷 필요
+- [x] GitHub에 새 저장소 생성
+- [x] 로컬 폴더에서 `git init` 및 원격 연결 (`git remote add origin ...`)
+- [x] `.gitignore` 작성 (예: `__pycache__/`, `state.json.tmp`, `state.json.corrupt`)
+- [x] 이 README.md 배치
+
+
+
+
+### 2. 저장소 복제 실습 (`clone`, `pull`)
+- [x] 다른 위치에 `git clone`으로 저장소 복제
+- [x] 복제본에서 README 등 간단히 수정 → `commit` → `push`
+- [x] 원래 작업 폴더에서 `git pull`로 변경사항 반영 확인
+
+### 3. 최종 점검
+- [x] 의미 있는 커밋 10개 이상 / 브랜치 생성·병합 기록 / `clone`·`pull` 사용 기록
+- [x] Git 명령어 7종 모두 사용: `init` `add` `commit` `push` `pull` `checkout` `clone`
+- [x] GitHub 저장소에 최신 코드와 README가 올라가 있음
+- [x] `state.json`을 올릴지 결정 (올린다면 기본 데이터 상태로 깨끗하게) 안 올림.
+
+### 4. 제출물
+- [x] GitHub 저장소 URL 
+- [x] 개발 환경 스크린샷 (VSCode, Python 버전, Git 설정)
+- [x] 실행 결과 스크린샷 (퀴즈 추가, 목록, 플레이, 점수)
+- [x] `git log --oneline --graph` 결과 스크린샷
