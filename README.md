@@ -118,8 +118,33 @@ JSON은 텍스트 형식이라 사람이 읽고 고치기 쉽고 구현이 간�
 | **CSV** | 표 형태에는 간단함 | 선택지 4개 같은 목록(중첩 구조)을 담기 불편 | 단순한 표 데이터 |
 
 
-
 > 파일 형식이 깨지면 다음 실행 때 안내 메시지와 함께 기본 퀴즈로 복구됩니다.
+
+## 🛠 요구사항 변경 시 영향 범위 체크리스트
+
+요구사항이 바뀌었을 때 어디를 고쳐야 하는지 정리했습니다. 코드는 모두 `main.py` 한 파일에 있고, 데이터는 `state.json`, 설명은 `README.md`에 있습니다.
+
+| 변경 상황 | 수정할 곳 (`main.py`) | 함께 확인할 것 |
+|---|---|---|
+| **선택지 개수 변경** (예: 4개 → 5개) | 상수 `CHOICE_COUNT`, `Quiz.__init__`(검증), `Quiz.display`, `QuizGame.add_quiz`(입력 반복), `create_default_quizzes`(기본 퀴즈 전부) | 기존 `state.json`은 선택지 개수가 달라 **손상으로 판정되어 초기화**됨(원본은 `.corrupt`로 보관). README의 스키마 설명과 예시 |
+| **퀴즈에 속성 추가** (예: 힌트, 카테고리) | `Quiz.__init__`, `Quiz.to_dict`, `Quiz.from_dict`, `Quiz.display`, `QuizGame.add_quiz`, `create_default_quizzes` | `from_dict`가 필수 키를 `data["..."]`로 읽으므로 옛 파일에서 `KeyError`가 남. 기본값을 줄 거면 `data.get(...)` 사용. README `state.json` 표 |
+| **점수 규칙 변경** (예: 가중치, 감점) | `QuizGame.play_quiz`(점수 계산), `QuizGame.update_best_score`, `QuizGame.show_score` | 저장되는 `best_score`, `best_correct`, `best_total`의 의미가 달라지면 `to_state`/`apply_state`와 README 표도 수정 |
+| **저장 항목 추가** (예: 플레이 히스토리) | `QuizGame.__init__`(속성), `QuizGame.to_state`, `QuizGame.apply_state`(검증·반영), `QuizGame.reset_to_default`, `QuizGame.load_state`(안내 문구) | 새 항목은 옛 파일에 없을 수 있으므로 `data.get` + 기본값 처리. README `state.json` 스키마 |
+| **저장 위치·형식 변경** (예: 파일명, DB) | 상수 `STATE_FILE`, `QuizGame.save_state`, `QuizGame.load_state`, `QuizGame.backup_corrupted_file` | `.gitignore`(임시/백업 파일명), README 파일 구조와 데이터 파일 설명 |
+| **메뉴 추가·변경** (예: 퀴즈 삭제) | `MENU_*` 상수, `QuizGame.show_menu`, `QuizGame.run`의 `actions` 딕셔너리, 새 기능 메서드 | 종료 번호(`MENU_EXIT`)가 바뀌면 `run`의 `read_int("선택: ", MENU_PLAY, MENU_EXIT)` 범위도 확인. README 기능 목록, 플로차트 |
+| **출제 방식 변경** (예: 난이도·카테고리별) | `QuizGame.play_quiz`(`random.sample`과 문제 수 선택 부분) | 퀴즈가 비었을 때 처리, 결과 점수 계산 |
+| **입력 검증 규칙 변경** | `QuizGame.read_int`, `QuizGame.read_text` | 모든 숫자 입력이 `read_int`를 거치므로 한 곳만 고치면 됨. 안내 문구 통일 |
+| **화면 문구·디자인 변경** | 상수 `TITLE`, `WIDE_LINE`, `THIN_LINE`, `QuizGame.show_banner`, `QuizGame.show_menu`, `Quiz.display` | README 스크린샷 갱신 |
+
+> 상수나 메서드가 쓰이는 곳을 빠짐없이 찾으려면 `grep -n "CHOICE_COUNT" main.py`처럼 이름으로 검색합니다.
+
+### ✅ 변경 후 공통 점검
+
+- [ ] `main.py` 수정 후 직접 실행: 정상 플레이, 잘못된 입력, `Ctrl+C` 종료
+- [ ] `state.json`을 지운 첫 실행과, 옛 형식 파일로 실행했을 때 모두 정상 동작하는지 확인
+- [ ] 종료 후 재실행해도 퀴즈와 점수가 유지되는지 확인
+- [ ] README 갱신: 기능 목록, 파일 구조, 데이터 파일 설명(`state.json` 표), 플로차트, 스크린샷
+- [ ] 변경 목적별로 커밋을 나누고 규칙에 맞는 메시지 작성 (`Feat` / `Fix` / `Refactor` / `Docs`)
 
 
 ## 플로차트
